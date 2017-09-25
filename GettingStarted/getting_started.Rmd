@@ -1,0 +1,72 @@
+---
+title: 'LearnR (A Guide for Clinician Scientists): Download/Install and Set-Up'
+author: "Alvin D. Jeffery, PhD, RN"
+date: "Last Updated `r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+---
+
+## Getting Started
+
+**Why R?**
+
+* Free!
+* Flexible
+* Can do almost anything you need (cutting edge analytics, application integration, etc.)
+* People who know R will respect you more
+* People who don't know R will be intimidated by you
+
+**Why NOT R?**
+
+* Steep learning curve
+* Designed BY statisticians FOR statisticians
+* Requires thinking differently about your data
+
+**What is R?**
+
+* R is a language and environment for statistical computing and graphics. It is a GNU project which is similar to the S language and environment which was developed at Bell Laboratories (formerly AT&T, now Lucent Technologies) by John Chambers and colleagues. R can be considered as a different implementation of S. There are some important differences, but much code written for S runs unaltered under R.  
+
+* R provides a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, and is highly extensible. The S language is often the vehicle of choice for research in statistical methodology, and R provides an Open Source route to participation in that activity.  
+
+* One of R’s strengths is the ease with which well-designed publication-quality plots can be produced, including mathematical symbols and formulae where needed. Great care has been taken over the defaults for the minor design choices in graphics, but the user retains full control.  
+
+* R is available as Free Software under the terms of the Free Software Foundation’s GNU General Public License in source code form.  
+
+\newpage
+### Download & Install
+
+To get started, you'll want to download the latest copy of R as well as RStudio (RStudio is a front-end interface that makes working with R much easier).  
+
+To download R, go to: <https://cran.r-project.org> 
+
+To download RStudio, go to: <https://www.rstudio.com/products/rstudio/download/> 
+
+To keep things simple for our first class, perform the following 'chunk' while connected to internet.  
+
+```{r, eval=FALSE}
+# the following line only needs to be executed once (and it might take a few minutes)
+install.packages('Hmisc', dependencies = TRUE) 
+
+# then...
+library(Hmisc) # load Frank Harrell's R package with several user-friendly functions
+
+# Don't worry about any messages like 'Loading required package: ggplot2' or like 
+# 'The following objects are masked from...'
+
+getHdata(support) # load a practice data set using Frank's package
+```
+
+**Additional Resource(s)**
+
+My favorite way to start learning R is with the `r paste("swirl")` package.  Once you have downloaded & installed R and RStudio, copy and paste the following command lines (one at a time) into RStudio to get started swirling!  
+
+```{r, eval=FALSE}
+install.packages("swirl") # This will install 'swirl' on your computer
+library("swirl")  # This will load the package into R to make it available
+swirl() # This will start the program
+```
+
+You can also check out <https://www.codeschool.com/courses/try-r> to practice some R programming without downloading or installing anything.  
+
