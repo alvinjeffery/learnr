@@ -74,10 +74,10 @@ blah_descr[4] # mean
 ### Read Data with Built-In R Functions
 
 ```{r, eval=FALSE}
-mydata <- read.csv('/Users/AlvinMBA/Desktop/VAQS/Learning R/support.csv')
+mydata <- read.csv('/Users/AlvinMBA/Desktop/learnr/support.csv')
 
 ?read.table # not as many good defaults here for a csv file
-mydata <- read.table(file = '/Users/AlvinMBA/Desktop/VAQS/Learning R/support.csv', # file name
+mydata <- read.table(file = '/Users/AlvinMBA/Desktop/learnr/support.csv', # file name
                  header = TRUE, # the first row is a header
                  sep = ',') # CSV file, but also have... '' | '\t' | ',' 
 ```
@@ -93,7 +93,7 @@ library(foreign)
 
 library(Hmisc)
 ?csv.get
-mydata <- csv.get('/Users/AlvinMBA/Desktop/VAQS/Learning R/support.csv', # file name
+mydata <- csv.get('/Users/AlvinMBA/Desktop/learnr/support.csv', # file name
               lowernames = TRUE, # convert variable names to lower case
               charfactor = TRUE) # factor conversion if n/2 unique values
 
