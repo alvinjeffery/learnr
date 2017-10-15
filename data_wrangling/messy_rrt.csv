@@ -1,0 +1,12 @@
+Participant ID,Date of Birth,First Name,Last Name,Gender,Location of RRT,Ward location?,Ward Location?,Ward location?,Date of RRT,Patient's primary service?,Who called the RRT?,Was a code called?,How many minutes did you spend on this call?,Which MDs did you discuss the RRT with? (choice=Primary resident),Which MDs did you discuss the RRT with? (choice=Primary fellow),Which MDs did you discuss the RRT with? (choice=Primary attending)
+8003,5/27/56,Alvin,Jeffery,Female,VUH,10T3,,,2/1/16,Oncology,Respiratory therapist,No,,Unchecked,Unchecked,Unchecked
+8105,11/20/89,Leanne,Boehm,Female,VUH,8N,,,2/2/16,General Medicine,,No,,Unchecked,Unchecked,Unchecked
+1198,11/25/66,Kristy,Kummerow,Female,VUH,,8N,,2/3/16,General Medicine,Nurse,No,25,Checked,Unchecked,Unchecked
+1905,1/28/49,Amelia,Maiga,Male,VUH,,,6N,2/4/16,Neurosurgery,Nurse,No,25,Checked,Unchecked,Unchecked
+1905,1/28/49,Amelia,Maiga,Male,VUH,,,6N,2/5/16,Neurosurgery,Nurse,No,25,Checked,Unchecked,Unchecked
+2850,8/9/28,Caroline,Presley,Female,VUH,Radiology,,,2/6/16,Cardiology,Nurse,No,15,Checked,Unchecked,Unchecked
+1728,6/5/35,Thomas,Spain,Female,VUH,,8S,,2/7/16,Gastroenterology,Nurse,Yes,16,Checked,Checked,Unchecked
+2122,11/27/00,Jo,Wilson,Female,VUH,ED,,,2/8/16,Other,Physician,No,15,Unchecked,Unchecked,Unchecked
+8712,7/18/45,Kate,Wooldridge,Female,VUH,7S,,,2/9/16,Other,Nurse,No,45,Checked,Unchecked,Unchecked
+2097,10/12/15,Jasmine,Wang,Female,VCH,8N,,,2/10/16,Other,Nurse,No,35,Unchecked,Unchecked,Unchecked
+4568,3/10/28,Madeline,Morrell,Female,MCN /RW,,,3RW,2/11/16,Non-teaching Medicine,Nurse,No,15,Unchecked,Unchecked,Checked
