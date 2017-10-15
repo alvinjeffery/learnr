@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide 
 ---
 
 ```{r setup, include=FALSE}
@@ -44,10 +45,10 @@ head(w)
 ## Logistic Regression
 
 ```{r analysis, eval=TRUE}
-# f <- glm(death ~ age + bili, data=w, family='binomial')
-# summary(f)
+#f <- glm(death ~ age + bili, data=w, family='binomial')
+#summary(f)
 
-f <- lrm(death ~ rcs(age, 3) + rcs(bili, 3), data=w)
+f <- lrm(death ~ rcs(age, 3) + rcs(bili, 3) + dzgroup, data=w)
 f
 
 ```
