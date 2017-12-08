@@ -111,7 +111,8 @@ w2$age <- round(w2$age/365.25, 2) # convert to years & round
 w <- fread('/Users/AlvinMBA/Desktop/learnr/data_wrangling/messy_rrt.csv', 
            data.table = FALSE, na.strings = '')
 w <- cleanup.import(w, labels=colnames(w), 
-                    datevars = c('Date of Birth', 'Date of RRT'), dateformat='%m/%d/%y')
+                    datevars = c('Date of Birth', 'Date of RRT'),
+                    dateformat='%m/%d/%y')
 w <- upData(w, lowernames = TRUE, charfactor = TRUE) 
 
 colnames(w) <- c('id', 'dob', 'f_name', 'l_name', 'sex', 'location', 'ward_loc1', 
@@ -144,7 +145,8 @@ w$ward_loc <- ifelse(is.na(w$ward_loc1), # if loc1 empty, look in loc2...
                               w$ward_loc2), # use loc2 if it's not empty
                      w$ward_loc1) # use loc1 if it's not empty
 label(w$ward_loc) <- "Ward Location?"
-select(w, ward_loc1:ward_loc3, ward_loc) # check to ensure working
+temp <- select(w, ward_loc1:ward_loc3, ward_loc) # check to ensure working
+rm(temp)
 # drop original ward_loc values
 w <- select(w, -ward_loc1, -ward_loc2, -ward_loc3)
 
@@ -160,7 +162,7 @@ sum(duplicated(select(w, id:l_name))) # for select variables
 dup <- duplicated(select(w, id:l_name)) # store
 w[which(dup==TRUE), ]
 w[which(w$id==1905), ] # notice that the RRT dates are different!
-w <- arrange(w, id, date)
+w <- arrange(w, id, date) # use desc(date) to arrange in opposite direction
 w <- distinct(w, id, .keep_all = TRUE) # let's keep the incident RRT date
 
 # we also notice that Amelia has been classified as a 'male' - let's change this
@@ -177,7 +179,8 @@ w$sex <- factor(w$sex, labels = c("Female", "Male"))
 w <- fread('/Users/AlvinMBA/Desktop/learnr/data_wrangling/messy_rrt.csv', 
            data.table = FALSE, na.strings = '')
 w <- cleanup.import(w, labels=colnames(w), 
-                    datevars = c('Date of Birth', 'Date of RRT'), dateformat='%m/%d/%y')
+                    datevars = c('Date of Birth', 'Date of RRT'), 
+                    dateformat='%m/%d/%y')
 w <- upData(w, lowernames = TRUE, charfactor = TRUE) 
 
 colnames(w) <- c('id', 'dob', 'f_name', 'l_name', 'sex', 'location', 'ward_loc1', 
@@ -203,10 +206,13 @@ w2 <- w %>% # begin chain
   mutate(md_attending = ifelse(md_attending == 'Checked', 1, 0)) %>% 
   arrange(id, date) %>% 
   distinct(id, .keep_all=TRUE) %>% # remove the duplicate from Amelia's record
-  mutate(sex = ifelse(f_name == "Amela", 1, sex)) %>% 
+  mutate(sex = ifelse(f_name == "Amelia", 1, sex)) %>% 
   mutate(sex = ifelse(f_name == "Alvin" | f_name == "Thomas", 2, sex)) %>% 
   mutate(sex = factor(sex, labels = c("Female", "Male")))
 
+# can do some tests, if desired
+length(unique(w$id)) == length(unique((w2$id)))
+min(w$date) == min(w2$date)
 ```
 
 
