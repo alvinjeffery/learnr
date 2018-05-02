@@ -12,3 +12,6 @@ data_wrangling/maddie/
 data_wrangling/*.docx
 data_wrangling/*.sav
 data_wrangling/leanne_icu*
+data_wrangling/data_wrangling_02.Rmd
+data_wrangling/first_day.rda
+data_wrangling/icu.rda
