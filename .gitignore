@@ -6,3 +6,4 @@ cluster_analysis/
 !cluster_analysis/cluster_analysis.R
 support.*
 course_overview.*
+*/.Rhistory
