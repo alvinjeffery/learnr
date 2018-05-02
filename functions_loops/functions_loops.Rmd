@@ -1,0 +1,139 @@
+---
+title: "Functions & For Loops"
+author: "Alvin D. Jeffery, PhD(c), RN"
+date: 'Last Updated: `r Sys.Date()`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning=FALSE, comment="", echo = TRUE)
+```
+
+```{r load_packages, include=FALSE}
+library(Hmisc); library(data.table); library(dplyr); library(tidyr)
+library(stringr) # new package for working well with strings
+library(ROCR) # new package for sensitivity, specificity, etc.
+```
+
+```{r load_data}
+# load in the data
+w <- fread('./k_data.csv', 
+           data.table = FALSE)
+# take a look at the data
+head(w)
+colnames(w)
+
+```
+
+```{r}
+# begin by showing what the gather() function can do
+w_long <- w %>% # make a long file
+  gather(key = pt, # new column designating patient number
+         value = desc_ssi, # new column containing the values
+         ends_with("desc_ssi"))  # columns from which to pull data
+
+w_long <- w %>% 
+  gather(key = variable, # now make all the items into a long format
+         value = response, 
+         # except for provider characteristics & REDCap things
+         -(provider_id:instructions_complete), -post_survey_instructions_complete) %>% 
+  # create a new column for the patient id
+  mutate(pt = str_sub(variable, 3, 5)) %>% # keeps only the patient/case number (digits 3 through 5)
+  # create a new column to hold the item
+  mutate(item = str_sub(variable, 7)) %>% # keep everything from 7th digit onward
+  select(-variable) %>% # drop this intermediary variable
+  # (if you don't drop this column, the next step won't work)
+  # then, spread the data frame into wide version
+  spread(key = item, 
+         value = response) %>% 
+  arrange(provider_id)
+
+# set 'true' values (provided by researcher)
+w_long$true_ssi <- ifelse(w_long$pt == 116, 0, 
+                          ifelse(w_long$pt == 202, 1, 
+                                 ifelse(w_long$pt == 215, 0, NA)))
+
+w_long$true_sso <- ifelse(w_long$pt == 116, 0, 
+                          ifelse(w_long$pt == 202, 1, 
+                                 ifelse(w_long$pt == 215, 1, NA)))
+
+
+# convert responses to standardized form for ROCR package
+pred <- prediction(predictions = w_long$desc_ssi, # actual responses
+                     labels = w_long$true_ssi) # true values
+
+# take standardized predictions & measure the specific performance
+?performance 
+perf <- performance(pred, # the predcition object just created
+                    measure = 'sens', 
+                    x.measure = 'spec')
+print(perf) # review results
+
+# you can also get ROC Curves
+perf <- performance(pred, # the prediction object we just created
+                    measure = 'tpr', 
+                    x.measure = 'fpr')
+plot(perf)
+
+
+# if you really want CrossTables, you can use the gmodels package...
+library(gmodels) # load package
+CrossTable(w_long$true_ssi, w_long$desc_ssi)
+
+
+# new after sending out to everyone (compares the 2 sens/spec measures)...
+tab <- CrossTable(w_long$both_ssi, w_long$desc_ssi, 
+                   mcnemar = TRUE)
+
+# alternatively...
+tab$t # provides just the contingency table
+mcnemar.test(tab$t) # using base r stats package
+
+```
+
+```{r}
+# practice creating a very simple function
+my_overview <- function(data = w_long, var) {
+ print(paste("The mean is", 
+             mean(data[, var], na.rm=TRUE)))
+ print(paste("The minimum is", 
+             min(data[, var], na.rm=TRUE)))
+}
+
+my_overview(var = 'desc_ssi')
+```
+
+```{r}
+my_performance <- function(data, # ask for the dataframe
+                           vars, # which variables shall we use for comparing?
+                           truth = Cs(true_ssi, true_sso), # set truth as default
+                           roc_curves=FALSE) {
+  
+  for (v in 1:length(vars)) {
+    for (t in 1:length(truth)) {
+      print(paste("Comparing", vars[v], "and", truth[t]))
+      pred <- prediction(predictions = data[ , vars[v]], # actual responses
+                         labels = data[ , truth[t]]) # true values
+      
+      perf <- performance(pred, # the prediction object we just created
+                          measure = 'sens', # y-value
+                          x.measure = 'spec') # x-value
+      # review results...slot() used for formal classes
+      print(paste("Sensitivity = ", slot(perf, 'y.values')[[1]][2])) # sensitivity
+      print(paste("Specificity = ", slot(perf, 'x.values')[[1]][2])) # specificity
+  
+      if (roc_curves == TRUE) { # only plot if specified
+        perf <- performance(pred, 
+                            measure = 'tpr', 
+                            x.measure = 'fpr')
+        plot(perf)
+      } # end plot print
+    } # end t-truth cycle
+  } # end v-vars cycle
+} # end function
+
+my_performance(data = w_long, vars = Cs(desc_ssi, desc_sso))
+# optionally, set roc_curves = TRUE
+
+```
+
