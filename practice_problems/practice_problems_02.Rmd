@@ -1,0 +1,148 @@
+---
+title: "Practice Problems #2"
+author: "Alvin D. Jeffery, PhD, RN"
+date: "Last Updated: `r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning=FALSE, comment="", echo = FALSE)
+library(Hmisc); library(data.table); library(dplyr); library(tidyr)
+```
+
+
+# Load and Review Data
+
+This is a dataset that Maddie had shared with us.  (Maddie can provide overview.)
+
+Begin by reading in and exploring the data.  
+
+```{r}
+### read/load the data
+
+### explore the data
+
+
+```
+
+### Possible Approach
+```{r eval=FALSE}
+# answer key
+w <- fread('../data_wrangling/maddie/brain_fu_2015-04-28.csv')
+str(w)
+```
+
+## Filter by Follow-Up Time
+
+Let's say we want to only look at certain follow-up times.  
+
+```{r}
+### identify all possible values of 'fu.period'
+
+
+### subset 'fu.period' to '3 Month'
+
+### create a new CSV file with the filtered data 
+
+```
+
+### Possible Approach
+
+```{r eval=FALSE}
+# answer key
+unique(w$fu.period) # identify possible values
+three_months <- filter(w, fu.period == '3 Month') # subset to specified time
+write.csv(three_months, # create new CSV file
+          file = '../data_wrangling/maddie/brain_fu_three_months.csv') 
+```
+
+# Working with paste()
+
+Notice how long these file paths (directories) are.  It can be a burden to have to continue typing them again and again.  Additionally, it makes the code a little messy.  Let's work on storing the directory in a variable and then calling it in future functions.  
+
+```{r eval=FALSE}
+?paste # check out the help file first
+
+# store path/directory in a variable
+directory <- c('../data_wrangling/maddie/')
+directory # see how it looks by itself
+
+paste(directory, 'brain_fu_three_months.csv', sep='') # use paste w/filename & extension
+
+```
+
+This could also help us quickly filter & save files for multiple follow-up times.  Let's pretend we want to filter our data to each unique time point, and we want a separate file for each.  Performing this task could be as simple as embedding 2 lines of code within a for-loop.  
+
+```{r eval=FALSE}
+### enter your own code here (comments provided for each line)
+
+for (i in values) {  # begin for-loop [hint: consider using unique() ]
+  # filter data to specified fu.period timeframe 
+
+  # write filtered data to file using paste() to create unique file names 
+
+}  # end for-loop
+
+```
+
+### Possible Approach
+```{r eval=FALSE}
+
+for (i in unique(w$fu.period)) {
+  data <- filter(w, fu.period == i) # subset/filter to each time period
+  write.csv(data, # write filtered data to new file
+            file = paste(directory, 'brain_fu_', i, '.csv', sep=''))
+  
+  # if saving as .rdata file
+  save(data, file = paste(directory, 'brain_fu_', i, '.rdata', sep=''))
+}
+
+```
+
+# Filter by First Study Date
+
+In the other file, we want to subset each patient to only their first study day (i.e., find baseline information).  
+
+```{r eval=FALSE}
+# I am providing my own code because working with dates is SOOOO challenging
+# you really want to be connected to the internet to troubleshoot your error messages :-)  
+v <- fread(paste(directory, 'brain_assess_2015-04-28.csv', sep=''),
+           data.table = FALSE)
+str(v)
+# notice how dates are listed as character variables - we want to change this
+
+v <- cleanup.import(v, 
+                    # datetimevars = 'asmt.posix', # can't get to work
+                    # dateformat = '%m/%d/%Y %H:%M', 
+                    datevars = 'asmt.date',
+                    dateformat = '%m/%d/%Y')
+str(v) # did it work?
+
+first_day <- v %>% # prepare to store in new object while working on code
+  arrange(asmt.date) %>% # place all dates in ascending order (optional)
+  group_by(id) %>% # ensures the next step is done unique for each patient id
+  mutate(first.date = min(asmt.date)) %>% # add new column with earliest date
+  filter(asmt.date == first.date) %>% # remove all dates that aren't the first
+  select(-first.date) # remove the intermediary variable (optional)
+
+
+```
+
+# Removing Duplicates
+
+One last thing I had to do is sort out duplicate study ID’s and also how to narrow down the list to only a specific set of patients. For example, the BRAIN data has 821 patients, but this idea density project only has ~240. How to get that 821 to only the ~240.
+ 
+```{r eval=FALSE}
+str(w) # brain fu 
+str(v) # brain assess 
+
+library(foreign)
+u <- read.spss(file = paste(directory, 'ideadenseids.sav', sep = ''), 
+               to.data.frame = TRUE)
+
+```
+
+
+

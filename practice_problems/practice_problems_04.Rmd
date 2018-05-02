@@ -1,0 +1,116 @@
+---
+title: "Practice Problems #4"
+author: "Alvin D. Jeffery, PhD, RN"
+date: "Last Updated: `r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning=FALSE, comment="", echo = FALSE)
+library(Hmisc); library(data.table); library(dplyr); library(tidyr)
+```
+
+The goal of these practice problems is to build some of the 'basic' R skills for manipulating a variety of objects.  Outputs are provided to check your progress, but code is hidden from the PDF file.  
+
+1. Create a numeric vector comprising a sequence of integers 1 through 5.  Do with this with a function rather than typing them all out.  
+
+```{r}
+id <- seq(1, 5, by = 1)
+id
+```
+
+2. Create a character vector comprising 5 fruits/vegetables.  
+
+```{r}
+food <- Cs(apple, banana, carrot, daikon, eggplant)
+food
+```
+
+3. Create a 2-level factor vector identifying each of the previously-created foods as either a fruit or vegetable.  
+
+```{r}
+category <- factor(Cs(fruit, fruit, veg, veg, veg), labels = Cs(Fruit, Vegetable))
+category
+```
+
+4. Combine these 3 vectors into a dataframe.  
+
+```{r}
+df <- data.frame(id, food, category)
+df
+```
+
+5. Change the column names to "id", "food", and "type".  (*Advanced Users:* Change **only** the "category" column name to "type" by writing code where one and only one column name is changed.)
+
+```{r}
+colnames(df) <- Cs(id, food, type) # easiest
+# colnames(df)[which(colnames(df)=='category')] <- 'type' # for advanced users
+df
+```
+
+\newpage 
+6. Let's say you found an error in your data collection process, and you need to change the "carrot" value to "cucumber".  This can be done in a variety of ways, but let's try 2 common approaches.  
+
+6a. In the first approach, you only want to change this specific value.  Point R to the problematic value using matrix notation (i.e., using brackets and numbers).  *Hint:* If you encounter an error related to factors, you might need to coerce your food column to a character vector.  
+
+```{r}
+df$food <- as.character(df$food)
+df2 <- df # make copy so we can repeat this process
+df2[3, 2] <- 'cucumber'
+df2
+```
+
+6b. In the second approach, let's use an if-else statement to replace **all** instances of "carrot" with "cucumber."  This approach might be beneficial if there are systematic problems in a dataset that is much larger.  
+
+```{r}
+df$food <- ifelse(df$food == 'carrot', 'cucumber', df$food)
+df
+```
+
+7. Remove all rows that are fruits.  
+
+```{r}
+df <- filter(df, type != 'Fruit')
+df
+```
+
+8. Remove the type and id columns from the dataframe.  
+
+```{r}
+df <- select(df, -type, -id)
+# df <- select(df, food) # alternatively, keep only the food column
+df
+```
+
+9. Convert the food column by itself to a new vector.    
+
+```{r}
+food2 <- as.character(df$food)
+food2
+```
+
+10. Instead of combining the original vectors into a dataframe, let's place them into a list.  Explore the differences between your previously created dataframe and the newly created list.  
+
+```{r}
+new <- list(id = id, 
+            food = food, 
+            category = category)
+new
+```
+
+\newpage
+
+*Hints:* If you're struggling to perform these, you might benefit from exploring the following functions:  
+seq()  
+c() and Cs()  
+factor()  
+data.frame()  
+colnames()  
+as.character()  
+ifelse()  
+filter() or subset()  
+select()  
+list()  
+

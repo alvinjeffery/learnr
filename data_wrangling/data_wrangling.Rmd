@@ -47,7 +47,7 @@ library(Hmisc); library(data.table); library(dplyr); library(tidyr); library(lub
 # works more reliably that read.table()/read.csv() & although csv.get() states it calls
 # fread(), I haven't found this to be the case.  
 
-w <- fread('/Users/AlvinMBA/Desktop/learnr/data_wrangling/messy_rrt.csv', 
+w <- fread('./messy_rrt.csv', 
            data.table = FALSE) # I'm not a huge fan of data.table's, personally
 
 head(w) # review some of the data...could also use View()
@@ -108,7 +108,7 @@ w2$age <- round(w2$age/365.25, 2) # convert to years & round
 ## Re-Cap and Apply (Demo 2)
 
 ```{r, eval=FALSE}
-w <- fread('/Users/AlvinMBA/Desktop/learnr/data_wrangling/messy_rrt.csv', 
+w <- fread('./messy_rrt.csv', 
            data.table = FALSE, na.strings = '')
 w <- cleanup.import(w, labels=colnames(w), 
                     datevars = c('Date of Birth', 'Date of RRT'),
@@ -176,7 +176,7 @@ w$sex <- factor(w$sex, labels = c("Female", "Male"))
 ## dplyr and Chaining
 
 ```{r chaining_dplyr, eval=FALSE}
-w <- fread('/Users/AlvinMBA/Desktop/learnr/data_wrangling/messy_rrt.csv', 
+w <- fread('./messy_rrt.csv', 
            data.table = FALSE, na.strings = '')
 w <- cleanup.import(w, labels=colnames(w), 
                     datevars = c('Date of Birth', 'Date of RRT'), 

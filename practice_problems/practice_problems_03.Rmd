@@ -1,0 +1,191 @@
+---
+title: "Practice Problems #3"
+author: "Alvin D. Jeffery, PhD, RN"
+date: "Last Updated: `r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning=FALSE, comment="", echo = TRUE)
+library(Hmisc); library(data.table); library(dplyr); library(tidyr)
+```
+
+```{r make_bad_data, echo=FALSE, eval=FALSE}
+# Alvin's code for making a 'bad' data set that we can work on preparing
+getHdata(support) # load original file
+# add patient id for separating & re-joining later
+set.seed(123)
+support$id <- base::sample(1e4:1e5, size = nrow(support))
+# make separate vital signs, lab values, & demographics files
+vitals <- select(support, id, temp, hrt, resp, meanbp)
+labs <- select(support, id, wblc, alb, bili, crea, sod, ph, glucose, bun)
+demographics <- select(support, id, age, sex, edu, income, dzgroup)
+
+# make messy data
+vitals$hrt <- as.character(vitals$hrt) # coerce numeric to character
+
+Save(vitals); Save(labs); Save(demographics)
+```
+
+The purpose of this problem set is to practice multiple aspects of wrangling and analyzing data.  You will open up 3 separate datasets coming from the SUPPORT dataset, explore & manipulate them, and then do some analytical work.  
+
+# Load and Review Data
+
+Begin by reading in and exploring the data.  
+
+```{r}
+### read/load the data
+
+
+### explore the data
+
+
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+# answer key
+Load(vitals); Load(labs); Load(demographics)
+```
+
+# Descriptive Statistics
+
+Explore the following items:  
+1. Create a table of how many patients have each disease.  
+2. What is the mean heart rate?  
+3. Convert temperature from Celsius to Farenheit.  
+4. Set non-physiological respiratory rates to missing.  
+
+```{r}
+### disease table
+
+
+### troubleshoot discovering the mean heart rate
+
+
+### create new variable tempF for temperature in Farenheit
+
+
+### if respiratory rate < 8, set to NA
+
+
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+# answer key
+table(demographics$dzgroup)
+
+vitals$hrt <- as.numeric(vitals$hrt)
+mean(vitals$hrt, na.rm = T)
+
+vitals$tempF <- vitals$temp * 9/5 + 32
+
+vitals$resp <- ifelse(vitals$resp < 8, 
+                      NA, 
+                      vitals$resp)
+```
+
+\newpage
+# Combine Datasets
+
+Combine all 3 datasets into 1 big dataframe for conducting analyses.  There should be 1 row per patient.  Then, sort the large dataframe by patient's ages.  
+
+*Challenge:* Re-write all this code as one chain.  
+
+```{r}
+### combine demographics and vitals dataframes into an "mydata" object
+
+
+### add the labs dataframe to the "mydata" object
+
+
+### sort by age from oldest to youngest
+
+
+### re-write above lines into 1 chain
+
+
+```
+
+```{r echo=FALSE, eval=FALSE}
+# answer key
+mydata <- left_join(demographics, vitals, by='id')
+mydata <- left_join(mydata, labs, by='id')
+mydata <- arrange(mydata, desc(age))
+
+mydata <- # as a chain
+  left_join(demographics, vitals, by = 'id') %>% 
+  left_join(labs, by = 'id') %>% 
+  arrange(desc(age))
+```
+
+# Sex Differences in Heart Rate
+
+Let's say you want to explore sex differences in the heart rate values.  Perform the following procedures:  
+1. Create a boxplot figure of the heart rates, grouped by male vs. female  
+2. Perform a t-test for inferential analysis  
+3. Build a linear model for further inferential analysis  
+
+```{r}
+### boxplot (don't forget to add a title & consider rotating your y-axis labels)
+
+
+### conduct a t-test 
+
+
+### build a linear model 
+
+
+
+```
+
+```{r echo=FALSE, eval=FALSE}
+# answer key
+boxplot(hrt ~ sex, data = mydata, 
+        # plot options
+        main = "Heart Rate Differences between Sexes", 
+        las = 1)
+
+t.test(hrt ~ sex, data = mydata)
+
+fit <- lm(hrt ~ sex, data = mydata)
+summary(fit)
+```
+
+# Function for Boxplots
+
+Your co-investigator really loved your beautiful boxplots.  You want to create a function that makes it easier to create these.  Write a function that takes 3 arguments (data, dependent variable, & grouping/independent variable) and produces a boxplot where the title is automatically populated according to the variable names.  
+
+*Hint:* You'll need to use a paste() function within a formula() function in order to pass it appropriately to the boxplot function().  
+
+```{r}
+### create function
+
+
+### attempt some examples
+
+
+```
+
+```{r echo=FALSE, eval=FALSE}
+# answer key
+make_boxplots <- function(data = mydata, dv, grouped_by) {
+  title_helper <- ifelse(grouped_by == "dzgroup", "Disease Group", 'Sex')
+  boxplot(formula(paste(dv, "~", grouped_by)), 
+          data = data, 
+          main = paste(dv, "differences between", title_helper), 
+          las = 1)
+}
+
+make_boxplots(dv = 'hrt', 
+              grouped_by = 'sex')
+
+# other examples
+make_boxplots(dv = 'ph', grouped_by = 'sex')
+make_boxplots(dv = 'ph', grouped_by = 'dzgroup')
+make_boxplots(dv = 'age', grouped_by = 'dzgroup')
+```
+

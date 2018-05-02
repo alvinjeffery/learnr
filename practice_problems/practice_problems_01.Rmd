@@ -1,0 +1,95 @@
+---
+title: "Practice Problems #1"
+author: "Alvin D. Jeffery, PhD(c), RN"
+date: "Last Updated: `r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning=FALSE, comment="", echo = FALSE)
+library(Hmisc); library(dplyr); library(tidyr)
+```
+
+Begin by creating some fictitious data.  Create a 2-column dataframe where the first 1 column will essentially be row numbers of 1 through 10.  The 2nd column will be randomly-generated numbers from a normal distribution with a mean of 10 and a standard deviation of 1.  
+
+It should look something like this to start...
+
+```{r}
+data <- data.frame(seq(1, 10, by = 1), 
+                   rnorm(n = 10, mean = 10, sd = 1))
+colnames(data) <- Cs(case, value)
+data
+```
+
+If you run this again, you are likely to get different results for the "value".  What line of code would allow you to keep the random numbers consistent regardless of how many times it's run?  The example below uses a `123` starting point.  
+
+```{r}
+set.seed(123)
+
+# the following code is copied from the last chunk
+data <- data.frame(seq(1, 10, by = 1), 
+                   rnorm(n = 10, mean = 10, sd = 1))
+colnames(data) <- Cs(case, value)
+data
+```
+
+Now that you have a set of data, extract the second row and only the second row.  It should look something like this...
+
+```{r}
+data[2, ]
+```
+
+What about the 2nd column of the 2nd row?  
+
+```{r}
+data[2, 2]
+```
+
+What if you wanted both columns of the 2nd and 3rd rows?  
+
+```{r}
+data[2:3, ]
+```
+
+Let's pretend you frequently need to create this fictitious data but you need a different number of rows every time.  How could you re-write the code in such a way that you assign the preferred number of rows to a variable & re-run the code without changing the number of rows in multiple places?  
+
+```{r}
+r <- 10
+set.seed(123)
+data <- data.frame(seq(1, r, by = 1), 
+                   rnorm(n = r, mean = 10, sd = 1))
+colnames(data) <- Cs(case, value)
+data
+```
+
+You could also try writing a function that makes it all much easier.  How could you write a function with defaults but allows you to quickly change the number of rows, the mean, and/or the standard deviation?  
+
+```{r}
+make_data <- function(r = 10, mean = 10, sd = 1, seed = 123) {
+  set.seed(seed)
+  data <<- data.frame(seq(1, r, by = 1), 
+                     rnorm(n = r, mean = mean, sd = sd))
+  # the double-arrows return object to global environment
+  colnames(data) <<- Cs(case, value)
+}
+
+make_data()
+```
+
+Make a basic histogram of the data produced from this new function where there are 100 rows.  Change the settings to make title and axes look like the following image.  
+(Note: To rotate the y-axis values, use `las = 1` .)
+
+```{r}
+make_data(r = 100)
+
+hist(data$value, 
+     # breaks = 20, # adjust for add'l granularity
+     main = "Histogram", 
+     xlab = "Value",
+     las = 1)
+```
+
+
+

@@ -8,3 +8,7 @@ support.*
 course_overview.*
 .Rhistory
 */.Rhistory
+data_wrangling/maddie/
+data_wrangling/*.docx
+data_wrangling/*.sav
+data_wrangling/leanne_icu*
