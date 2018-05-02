@@ -60,7 +60,7 @@ d <- dist(df, method = 'euclidean')
 fit <- hclust(d, method = 'ward.D')
 plot(fit)
 # view clusters on dendrogram 
-rect.hclust(fit, k=3, border = 'red')
+rect.hclust(fit, k=5, border = 'red')
 
 # find labels for each row
 groups <- cutree(fit, 3)
@@ -230,7 +230,7 @@ rowv <- df %>%
   daisy(metric = 'gower') %>%
   hclust(method='ward.D2') %>% 
   as.dendrogram %>% 
-  set("branches_k_color", k=3) %>% 
+  set("branches_k_color", k=5) %>% 
   set("branches_lwd", 2) %>% 
   ladderize 
 
